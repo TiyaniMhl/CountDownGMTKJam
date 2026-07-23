@@ -23,8 +23,8 @@ public class PlayerController : MonoBehaviour
     public GameObject bulletPool;
     public GameObject bulletPrefab;
     public float bulletSpeed = 20f;
+    public Transform cursor;
     
-
     private float _horizontalInput;
     private bool _jumpPressed;
     private bool _shootPressed;
@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        Aim();
         _horizontalInput = Input.GetAxis("Horizontal");
         if (Input.GetButtonDown("Jump"))
         { 
@@ -71,6 +72,16 @@ public class PlayerController : MonoBehaviour
             _inGameRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             _jumpPressed = false;
         }
+    }
+
+    public void Aim()
+    {
+        Vector2 cursorPosition = cursor.position;
+        Vector2 position = gameObject.transform.position;
+        Vector2 direction = cursorPosition - position;
+        direction = direction.normalized;
+        direction *= 1f;
+        gun.position = position + direction;
     }
 
     public void Shoot()

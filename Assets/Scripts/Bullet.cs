@@ -5,6 +5,7 @@ public class Bullet : MonoBehaviour
     public Rigidbody2D rb;
     private float _speed;
     private Vector2 _direction;
+    private const float LifeTime = 5;
     
     void Awake()
     {
@@ -12,6 +13,7 @@ public class Bullet : MonoBehaviour
         rb.linearDamping = 0;
         rb.gravityScale = 0;
         rb.linearVelocity = transform.right * PlayerController.Instance.bulletSpeed;
+        Destroy(gameObject, LifeTime);
     }
     
 
@@ -19,6 +21,7 @@ public class Bullet : MonoBehaviour
     {
         
     }
+    
 
     void Move()
     {
