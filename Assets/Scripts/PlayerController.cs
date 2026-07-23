@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -20,7 +21,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Gun")] 
     public Transform gun;
-    public GameObject bulletPool;
+    public GameObject bulletPoolPrefab;
     public GameObject bulletPrefab;
     public float bulletSpeed = 20f;
     public Transform cursor;
@@ -28,6 +29,8 @@ public class PlayerController : MonoBehaviour
     private float _horizontalInput;
     private bool _jumpPressed;
     private bool _shootPressed;
+    private GameObject _bulletPool;
+    private bool _liveBullets;
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -37,6 +40,13 @@ public class PlayerController : MonoBehaviour
         }
         Instance = this;
         _inGameRb = GetComponent<Rigidbody2D>();
+        _bulletPool = Instantiate(bulletPoolPrefab);
+    }
+
+
+    private void OnDestroy()
+    {
+        Destroy(_bulletPool);
     }
 
     // Update is called once per frame
@@ -45,6 +55,8 @@ public class PlayerController : MonoBehaviour
         Move();
         Jump();
     }
+    
+    
 
     void Update()
     {
@@ -58,6 +70,7 @@ public class PlayerController : MonoBehaviour
         { 
             Shoot();
         }
+        _liveBullets = BulletPool.Instance.IsLive();
     }
 
     public void Move()
@@ -84,12 +97,22 @@ public class PlayerController : MonoBehaviour
         gun.position = position + direction;
     }
 
+    public bool IsLive()
+    {
+        return _liveBullets;
+    }
+
     public void Shoot()
     {
+        if (!GameController.Instance.TryDecreaseBullets())
+        {
+            return;
+        }
         var gunPosition = gun.position;
         Quaternion rot = Quaternion.LookRotation((gunPosition - gameObject.transform.position), Vector2.up);
         rot *= Quaternion.Euler(0f,-90f, 0f);
-        Instantiate(bulletPrefab, gunPosition, rot, bulletPool.transform);
+        //Instantiate(bulletPrefab, gunPosition, rot, bulletPool.transform);
+        BulletPool.Instance.Add(bulletPrefab, gunPosition, rot);
     }
 
     private bool IsGrounded()

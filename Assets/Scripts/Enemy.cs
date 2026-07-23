@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : Destructible
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -14,18 +14,5 @@ public class Enemy : MonoBehaviour
     {
         
     }
-
-    public void Hit()
-    {
-        Destroy(gameObject);
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Bullet"))
-        {
-            other.GetComponent<Bullet>().EnemyHit();
-            Hit();
-        }
-    }
+    
 }
