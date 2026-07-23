@@ -24,7 +24,7 @@ public class Enemy : MonoBehaviour
     {
         if (other.CompareTag("Bullet"))
         {
-            Destroy(other.gameObject);
+            other.GetComponent<Bullet>().EnemyHit();
             Hit();
         }
     }
