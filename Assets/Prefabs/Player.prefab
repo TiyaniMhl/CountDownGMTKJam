@@ -612,7 +612,7 @@ MonoBehaviour:
   player: {fileID: 6864808759135083550}
   gameCamera: {fileID: 0}
   moveSpeed: 5
-  jumpForce: 15
+  jumpForce: 10
   groundCheckRadius: 0.25
   whatIsGround:
     serializedVersion: 2
@@ -621,8 +621,9 @@ MonoBehaviour:
   bulletSpawner: {fileID: 2415946111998278689}
   bulletPoolPrefab: {fileID: 4257106808604568133, guid: 019f3ce85e4d8b243bf92add08e3f907, type: 3}
   bulletPrefab: {fileID: 1629652320761958335, guid: 2906055c94375954e95b47825f3bae83, type: 3}
-  bulletSpeed: 10
+  bulletSpeed: 15
   cursor: {fileID: 3740705945246786748}
+  cooldown: 2
   armRenderer: {fileID: 7808972653593443728}
   maxLaserDistance: 5
 --- !u!70 &1578324117645582647
