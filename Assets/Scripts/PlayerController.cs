@@ -25,7 +25,12 @@ public class PlayerController : MonoBehaviour
     public GameObject bulletPrefab;
     public float bulletSpeed = 20f;
     public Transform cursor;
+
     
+    private Animator _animator;
+    private static readonly int Speed = Animator.StringToHash("Speed");
+    private static readonly int VerticalSpeed  = Animator.StringToHash("Vertical Speed");
+    private static readonly int Grounded = Animator.StringToHash("Grounded");
     private float _horizontalInput;
     private bool _jumpPressed;
     private bool _shootPressed;
@@ -41,6 +46,7 @@ public class PlayerController : MonoBehaviour
         Instance = this;
         _inGameRb = GetComponent<Rigidbody2D>();
         _bulletPool = Instantiate(bulletPoolPrefab);
+        _animator = GetComponent<Animator>();
     }
 
 
@@ -71,11 +77,24 @@ public class PlayerController : MonoBehaviour
             Shoot();
         }
         _liveBullets = BulletPool.Instance.IsLive();
+        Animate();
+    }
+
+    public void Animate()
+    {
+        _animator.SetFloat(Speed, Mathf.Abs(_horizontalInput));
+        if (_horizontalInput > 0)
+            transform.localScale = new Vector3(1, 1, 1);
+        else if (_horizontalInput < 0)
+            transform.localScale = new Vector3(-1, 1, 1);
+        _animator.SetBool(Grounded, IsGrounded());
+        _animator.SetFloat(VerticalSpeed, _inGameRb.linearVelocityY);
     }
 
     public void Move()
     {
         _inGameRb.linearVelocity = new Vector2(_horizontalInput * moveSpeed, _inGameRb.linearVelocity.y);
+        
     }
 
     public void Jump()
