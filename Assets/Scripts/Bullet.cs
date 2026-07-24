@@ -16,6 +16,10 @@ public class Bullet : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody2D>();
         rb.linearDamping = 0;
         rb.gravityScale = 0;
+        rb.angularDamping = 0;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        rb.sleepMode = RigidbodySleepMode2D.NeverSleep;
+        rb.freezeRotation = true;
         rb.linearVelocity = transform.right * PlayerController.Instance.bulletSpeed;
         _pierceCount = 2;
         _bounce = 2;
@@ -45,6 +49,7 @@ public class Bullet : MonoBehaviour
         {
             _trueVelocity = current - 2 * (Vector2.Dot(current, normal)) * normal;
             rb.linearVelocity = _trueVelocity;
+            transform.right = _trueVelocity.normalized;
             _bounce--;
             if (_bounce <= 0)
             {

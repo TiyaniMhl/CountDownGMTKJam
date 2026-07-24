@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
@@ -20,13 +21,17 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheck;
 
     [Header("Gun")] 
-    public Transform gun;
+    public Transform bulletSpawner;
     public GameObject bulletPoolPrefab;
     public GameObject bulletPrefab;
     public float bulletSpeed = 20f;
     public Transform cursor;
 
-    
+    [Header("Gun Animator")] 
+    public Transform armRenderer;
+
+    public float maxLaserDistance = 20f;
+    private LineRenderer _lineRenderer;
     private Animator _animator;
     private static readonly int Speed = Animator.StringToHash("Speed");
     private static readonly int VerticalSpeed  = Animator.StringToHash("Vertical Speed");
@@ -36,6 +41,7 @@ public class PlayerController : MonoBehaviour
     private bool _shootPressed;
     private GameObject _bulletPool;
     private bool _liveBullets;
+    private Vector2 _localGunPos;
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -46,7 +52,9 @@ public class PlayerController : MonoBehaviour
         Instance = this;
         _inGameRb = GetComponent<Rigidbody2D>();
         _bulletPool = Instantiate(bulletPoolPrefab);
-        _animator = GetComponent<Animator>();
+        _animator = GetComponentInChildren<Animator>();
+        _lineRenderer = GetComponentInChildren<LineRenderer>();
+        _lineRenderer.useWorldSpace = true;
     }
 
 
@@ -83,10 +91,15 @@ public class PlayerController : MonoBehaviour
     public void Animate()
     {
         _animator.SetFloat(Speed, Mathf.Abs(_horizontalInput));
-        if (_horizontalInput > 0)
+        if (_horizontalInput > 0){
             transform.localScale = new Vector3(1, 1, 1);
+            armRenderer.localScale = new Vector3(1, 1, 1);
+        }
         else if (_horizontalInput < 0)
+        {
             transform.localScale = new Vector3(-1, 1, 1);
+            armRenderer.localScale = new Vector3(-1, 1, 1);
+        }
         _animator.SetBool(Grounded, IsGrounded());
         _animator.SetFloat(VerticalSpeed, _inGameRb.linearVelocityY);
     }
@@ -108,12 +121,19 @@ public class PlayerController : MonoBehaviour
 
     public void Aim()
     {
-        Vector2 cursorPosition = cursor.position;
-        Vector2 position = gameObject.transform.position;
-        Vector2 direction = cursorPosition - position;
-        direction = direction.normalized;
-        direction *= 1f;
-        gun.position = position + direction;
+        var gunPosition = bulletSpawner.position;
+        armRenderer.rotation = Quaternion.LookRotation(cursor.position - gunPosition) * Quaternion.Euler(0f,-90f, 0f);
+        RaycastHit2D hit = Physics2D.Raycast(gunPosition, bulletSpawner.right, maxLaserDistance);
+        _lineRenderer.SetPosition(0, gunPosition);
+        if (hit.collider != null)
+        {
+            _lineRenderer.SetPosition(1, hit.point);
+        }
+        else
+        {
+            Vector2 endPos = gunPosition + (bulletSpawner.right * maxLaserDistance);
+            _lineRenderer.SetPosition(1, endPos);
+        }
     }
 
     public bool IsLive()
@@ -127,8 +147,8 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-        var gunPosition = gun.position;
-        Quaternion rot = Quaternion.LookRotation((gunPosition - gameObject.transform.position), Vector2.up);
+        var gunPosition = bulletSpawner.position;
+        Quaternion rot = Quaternion.LookRotation(cursor.position - gunPosition, Vector2.up);
         rot *= Quaternion.Euler(0f,-90f, 0f);
         //Instantiate(bulletPrefab, gunPosition, rot, bulletPool.transform);
         BulletPool.Instance.Add(bulletPrefab, gunPosition, rot);
