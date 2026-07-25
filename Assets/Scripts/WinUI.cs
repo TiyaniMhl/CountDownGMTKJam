@@ -4,7 +4,7 @@ public class WinUI : MonoBehaviour
 {
     public GameObject thirdStar;
     public GameObject secondStar;
-    
+    public GameObject nextLevelButton;
     public void ThreeStars()
     {
         secondStar.SetActive(true);
@@ -24,6 +24,11 @@ public class WinUI : MonoBehaviour
     void Start()
     {
         
+    }
+
+    public void HideNextLevelButton()
+    {
+        nextLevelButton.SetActive(false);
     }
 
     // Update is called once per frame

@@ -4,9 +4,9 @@ using UnityEngine;
 public class Enemy : Destructible
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
-        
+        GameController.Instance.AddEnemy(gameObject);
     }
 
     // Update is called once per frame
@@ -14,5 +14,9 @@ public class Enemy : Destructible
     {
         
     }
-    
+
+    private void OnDestroy()
+    {
+        GameController.Instance.RemoveEnemy(gameObject);
+    }
 }
