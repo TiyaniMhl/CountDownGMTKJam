@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
     private bool _liveBullets;
     private Vector2 _localGunPos;
     private float _cooldownTimer;
+    private GameController _gameController;
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -56,6 +57,7 @@ public class PlayerController : MonoBehaviour
         _bulletPool = Instantiate(bulletPoolPrefab);
         _animator = GetComponentInChildren<Animator>();
         _lineRenderer = GetComponentInChildren<LineRenderer>();
+        _gameController = GameController.Instance;
         _lineRenderer.useWorldSpace = true;
         _cooldownTimer = 0;
     }
@@ -69,6 +71,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (_gameController.levelHasEnded)
+        {
+            return;
+        }
         Move();
         Jump();
     }
@@ -77,6 +83,22 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape) && !_gameController.GamePaused())
+        {
+            GameController.Instance.Pause();
+            return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && _gameController.GamePaused())
+        {
+            GameController.Instance.Resume();
+            return;
+        }
+        if (_gameController.levelHasEnded)
+        {
+            return;
+        }
+
         if (_cooldownTimer>0)
         {
             _cooldownTimer -= Time.deltaTime;
@@ -100,12 +122,12 @@ public class PlayerController : MonoBehaviour
     {
         _animator.SetFloat(Speed, Mathf.Abs(_horizontalInput));
         if (_horizontalInput > 0){
-            transform.localScale = new Vector3(1, 1, 1);
+            transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
             armRenderer.localScale = new Vector3(1, 1, 1);
         }
         else if (_horizontalInput < 0)
         {
-            transform.localScale = new Vector3(-1, 1, 1);
+            transform.localScale = new Vector3(-1.5f, 1.5f, 1.5f);
             armRenderer.localScale = new Vector3(-1, 1, 1);
         }
         _animator.SetBool(Grounded, IsGrounded());

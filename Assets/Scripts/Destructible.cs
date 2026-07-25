@@ -4,18 +4,22 @@ using UnityEngine;
 
 public class Destructible : MonoBehaviour
 {
-    private Animator _animator;
-    private static readonly int DestroyThis = Animator.StringToHash("Destroy");
+    protected Animator Animator;
+    protected static readonly int DestroyThis = Animator.StringToHash("Destroy");
     public Collider2D triggerCollider;
-    private void Awake()
+    protected bool AlreadyHit;
+    private void Start()
     {
-        _animator = GetComponent<Animator>();
+        Animator = GetComponent<Animator>();
+        AlreadyHit = false;
     }
 
     
-    private IEnumerator Hit()
+    protected virtual IEnumerator Hit()
     {
-        _animator.SetTrigger(DestroyThis);
+        if (AlreadyHit) yield break;
+        AlreadyHit = true;
+        Animator.SetTrigger(DestroyThis);
         triggerCollider.enabled = false;
         yield return new WaitForSeconds(5);
         Destroy(gameObject);

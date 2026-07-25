@@ -5,17 +5,26 @@ using UnityEngine;
 public class UIController:MonoBehaviour
 {
     public WinUI winUI;
-    public LoseUI loseUI;
+    public GameObject loseUI;
     public LevelUI levelUI;
+    public GameObject pauseUI;
 
     private void OnEnable()
     {
         GameController.OnLevelComplete += LevelComplete;
         GameController.OnLevelFailed += LevelFailed;
         GameController.FinalLevel += NoNextLevel;
-        loseUI.gameObject.SetActive(false);
+        GameController.OnPause += ShowPauseMenu;
+        GameController.OnResume += HidePauseMenu;
+        
+    }
+
+    void Awake()
+    {
+        loseUI.SetActive(false);
         winUI.gameObject.SetActive(false);
         levelUI.gameObject.SetActive(true);
+        pauseUI.SetActive(false);
     }
 
     private void OnDisable()
@@ -23,12 +32,27 @@ public class UIController:MonoBehaviour
         GameController.OnLevelComplete -= LevelComplete;
         GameController.OnLevelFailed -= LevelFailed;
         GameController.FinalLevel -= NoNextLevel;
+        GameController.OnPause -= ShowPauseMenu;
+        GameController.OnResume -= HidePauseMenu;
     }
 
     public void OnNextLevel()
     {
         GameController.Instance.NextLevel();
     }
+
+    public void ShowPauseMenu()
+    {
+        pauseUI.gameObject.SetActive(true);
+        levelUI.gameObject.SetActive(false);
+    }
+
+    public void HidePauseMenu()
+    {
+        pauseUI.SetActive(false);
+        levelUI.gameObject.SetActive(true);
+    }
+    
 
     public void OnQuit()
     {
@@ -66,6 +90,6 @@ public class UIController:MonoBehaviour
     public void LevelFailed()
     {
         levelUI.gameObject.SetActive(false);
-        loseUI.gameObject.SetActive(true);
+        loseUI.SetActive(true);
     }
 }

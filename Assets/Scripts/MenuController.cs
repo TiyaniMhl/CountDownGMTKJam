@@ -7,7 +7,7 @@ public class MenuController : MonoBehaviour
 
     public static MenuController Instance;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -21,6 +21,11 @@ public class MenuController : MonoBehaviour
     void Update()
     {
         
+    }
+
+    void Start()
+    {
+        ContinueGame(GameController.Instance.playOrContinue);
     }
 
     public void OnQuit()

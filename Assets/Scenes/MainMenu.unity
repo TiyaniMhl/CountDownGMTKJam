@@ -1073,12 +1073,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba10b2ab00ca5ab449629a17e7315528, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelCompleted: 0
+  levelHasEnded: 0
   levelFailed: 0
   bullets: 0
   threeStars: 0
   twoStars: 0
   stars: 0
+  playOrContinue: 0
 --- !u!4 &1065003153
 Transform:
   m_ObjectHideFlags: 0
@@ -1292,7 +1293,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: 0
   m_CullingMask:

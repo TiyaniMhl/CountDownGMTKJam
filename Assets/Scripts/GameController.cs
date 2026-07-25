@@ -8,8 +8,8 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     public static GameController Instance;
-    public bool levelCompleted;
-    public bool levelFailed;
+    public bool levelHasEnded;
+    
     private List<GameObject> _enemies;
     [Tooltip("Amount of bullets given for this level.")]
     public int bullets;
@@ -20,14 +20,21 @@ public class GameController : MonoBehaviour
     [HideInInspector]
     public int stars;
 
+    private bool _levelStarted;
+
     private List<bool> _levelsCompleted;
     private List<int> _levelStars;
     private int _continueFromLevel;
     private LevelObject _currentLevel;
+    private bool _paused = false;
+    private bool _finalLevelCheckActive;
 
     private List<LevelObject> _allLevels;
+    [HideInInspector] public bool playOrContinue = false;
     
     public static event Action OnThreeStars;
+    public static event Action OnPause;
+    public static event Action OnResume;
     public static event Action OnTwoStars;
     public static event Action OnOneStar;
     public static event Action FinalLevel;
@@ -35,7 +42,7 @@ public class GameController : MonoBehaviour
     public static event Action<int> OnLevelComplete;
     public static event Action OnLevelFailed;
 
-    private static readonly string MainMenu = "MainMenu";
+    private static readonly string MainMenu = "Scenes/MainMenu";
     
     void Awake()
     {
@@ -46,8 +53,8 @@ public class GameController : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        Init(null);
         BuildLevelList();
+        Init(null);
     }
 
     void BuildLevelList()
@@ -57,19 +64,26 @@ public class GameController : MonoBehaviour
 
     void Init(LevelObject level)
     {
+        
         if (level == null)
         {
-            _currentLevel = _allLevels[0];
+            //UnityEngine.Cursor.visible = true;
+            _currentLevel = FindLevel(0);
             Load();
-            MenuController.Instance.ContinueGame(_continueFromLevel!=1);
+            //MenuController.Instance.ContinueGame(_continueFromLevel!=1);
+            playOrContinue = (_continueFromLevel != 1);
             return;
         }
+
+        _finalLevelCheckActive = false;
+        //UnityEngine.Cursor.visible = false;
+        _enemies = new List<GameObject>();
+        _levelStarted = false;
         _currentLevel = level;
         threeStars = _currentLevel.threeStars;
         twoStars = _currentLevel.twoStars;
         bullets = _currentLevel.bullets;
-        levelCompleted = false;
-        levelFailed = false;
+        levelHasEnded = false;
         stars = 3;
         OnBulletsChanged?.Invoke(bullets);
         OnThreeStars?.Invoke();
@@ -90,21 +104,32 @@ public class GameController : MonoBehaviour
     {
         if (requestedLevel==null)
         {
-            Debug.LogError("Game controller attempted to play a level that does not exist in the inspector. Requested level: " + _continueFromLevel);
-            SceneManager.LoadScene(SceneManager.GetSceneByName(MainMenu).name);
+            Debug.LogWarning("Game controller attempted to play a level that does not exist in the inspector. Requested level: " + _continueFromLevel);
+            SceneManager.LoadScene(MainMenu);
             Init(null);
             return;
         }
-        if (!SceneManager.GetSceneByName(requestedLevel.sceneName).IsValid())
+        if (!DoesSceneExist(requestedLevel.FullSceneName()))
         {
-            Debug.LogError("Game controller attempted to play a scene that does not exist in the game. Requested scene: " + requestedLevel.sceneName);
-            SceneManager.LoadScene(SceneManager.GetSceneByName(MainMenu).name);
+            Debug.LogWarning("Game controller attempted to play a scene that does not exist in the game. Requested scene: " + requestedLevel.FullSceneName());
+            SceneManager.LoadScene(MainMenu);
             Init(null);
             return;
         }
-        SceneManager.LoadScene(requestedLevel.sceneName);
-        Init(_currentLevel);
+        SceneManager.LoadScene(requestedLevel.FullSceneName());
+        Init(requestedLevel);
     }
+    bool DoesSceneExist(string scenePath)
+    {
+        int buildIndex = SceneUtility.GetBuildIndexByScenePath(scenePath);
+        return buildIndex >= 0;
+    }
+
+    public Vector3 initCameraPos()
+    {
+        return _currentLevel.initialCameraPosition;
+    }
+
 
     public void ResetGame()
     {
@@ -115,7 +140,7 @@ public class GameController : MonoBehaviour
     public void SaveAndQuit()
     {
         Save();
-        SceneManager.LoadScene(SceneManager.GetSceneByName(MainMenu).name);
+        SceneManager.LoadScene(MainMenu);
         Init(null);
     }
 
@@ -171,9 +196,16 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public bool GamePaused()
+    {
+        return _paused;
+    }
+
     public void AddEnemy(GameObject e)
     {
+        
         _enemies.Add(e);
+        _levelStarted = true;
     }
 
     public void RemoveEnemy(GameObject e)
@@ -188,6 +220,8 @@ public class GameController : MonoBehaviour
 
     public IEnumerator LevelWon()
     {
+        //UnityEngine.Cursor.visible = true;
+        levelHasEnded = true;
         _levelsCompleted[_currentLevel.levelNumber] = true;
         _levelStars[_currentLevel.levelNumber] = stars;
         yield return new WaitForSeconds(1);
@@ -222,15 +256,46 @@ public class GameController : MonoBehaviour
         return true;
     }
 
+    public void Pause()
+    {
+        if (levelHasEnded)
+        {
+            return;
+        }
+        _paused = true;
+        Time.timeScale = 0f;
+        //UnityEngine.Cursor.visible = true;
+        OnPause?.Invoke();
+    }
+
+    public void Resume()
+    {
+        _paused = false;
+        Time.timeScale = 1f;
+        //UnityEngine.Cursor.visible = false;
+        OnResume?.Invoke();
+    }
+
 
     void Update()
     {
-        if (_currentLevel.sceneName == MainMenu)
+        if (_finalLevelCheckActive)
         {
             return;
         }
 
-        if (_enemies.Count==0)
+        if (_currentLevel.levelNumber == 0) 
+        {
+            return;
+        }
+
+        if (_levelStarted==false)
+        {
+            return;
+        }
+
+        bool allEnemiesDying = _enemies.All(enemy => enemy.GetComponent<Enemy>().dying);
+        if (allEnemiesDying)
         {
             StartCoroutine(LevelWon());
             return;
@@ -238,8 +303,33 @@ public class GameController : MonoBehaviour
 
         if (bullets == 0 && !PlayerController.Instance.IsLive())
         {
-            levelFailed = true;
-            OnLevelFailed?.Invoke();
+            _finalLevelCheckActive = true;
+            StartCoroutine(FinalLevelCheck());
         }
+    }
+
+    IEnumerator FinalLevelCheck()
+    {
+        float timer = 10f;
+
+        while (timer > 0)
+        {
+            timer -= Time.deltaTime;
+            bool allEnemiesDying = _enemies.All(enemy => enemy.GetComponent<Enemy>().dying);
+            if (allEnemiesDying)
+            {
+                StartCoroutine(LevelWon());
+                yield break;
+            }
+            yield return null; // wait one frame
+        }
+        LevelFailed();
+    }
+
+    void LevelFailed()
+    {
+        levelHasEnded = true;
+        OnLevelFailed?.Invoke();
+        //UnityEngine.Cursor.visible = false;
     }
 }
