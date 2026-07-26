@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2551777808402260904}
   - component: {fileID: 4558689735057894428}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GunSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5836476426798570142}
   - component: {fileID: 3570278009767352852}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Laser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,7 +236,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2415946111998278689}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BulletSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -270,7 +270,7 @@ GameObject:
   - component: {fileID: 3839718210082031975}
   - component: {fileID: 8876336571125785425}
   - component: {fileID: 6498534888305477599}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BaseSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -379,7 +379,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7808972653593443728}
   - component: {fileID: 2021047986631752828}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ArmSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -467,7 +467,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3740705945246786748}
   - component: {fileID: 3580777292340952823}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cursor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -510,7 +510,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8988674047581590251}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -544,7 +544,7 @@ GameObject:
   - component: {fileID: 8734284806903311197}
   - component: {fileID: 1668812858924726440}
   - component: {fileID: 1578324117645582647}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -585,7 +585,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 3
+  m_GravityScale: 3.2
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -609,19 +609,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8170984f56bd2d4e83698a840156856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 6864808759135083550}
-  gameCamera: {fileID: 0}
-  moveSpeed: 5
-  jumpForce: 10
+  moveSpeed: 6
+  jumpForce: 13
   groundCheckRadius: 0.25
   whatIsGround:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 72
   groundCheck: {fileID: 8988674047581590251}
   bulletSpawner: {fileID: 2415946111998278689}
   bulletPoolPrefab: {fileID: 4257106808604568133, guid: 019f3ce85e4d8b243bf92add08e3f907, type: 3}
   bulletPrefab: {fileID: 1629652320761958335, guid: 2906055c94375954e95b47825f3bae83, type: 3}
-  bulletSpeed: 15
+  bulletSpeed: 17
   cursor: {fileID: 3740705945246786748}
   cooldown: 2
   armRenderer: {fileID: 7808972653593443728}

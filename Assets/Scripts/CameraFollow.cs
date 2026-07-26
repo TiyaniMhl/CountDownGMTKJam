@@ -8,8 +8,8 @@
         private readonly Vector3 _offset = new (0, 0, -10);
 
 
-        private const float DeadZoneWidth = 10f;
-        private const float DeadZoneHeight = 8f;
+        private const float DeadZoneWidth = 8f;
+        private const float DeadZoneHeight = 6f;
         private Vector3 _targetPos;
 
         private void Awake()

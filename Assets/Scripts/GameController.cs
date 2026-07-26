@@ -14,6 +14,9 @@ public class GameController : MonoBehaviour
     [HideInInspector] public bool playOrContinue = false;
     private bool _gamePaused;
     private bool _onMainMenu;
+    public bool debugLevel;
+
+    public int debug;
     
     void Awake()
     {
@@ -24,6 +27,12 @@ public class GameController : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        if (debugLevel)
+        {
+            Load();
+            SceneController.Instance.Play(debug);
+            return;
+        }
         Init(null);
     }
     

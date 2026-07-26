@@ -6,6 +6,8 @@
     {
         public static SceneController Instance;
         private static readonly string MainMenu = "Scenes/MainMenu";
+
+        
         //private bool _onMainMenu;
         void Awake()
         {
