@@ -1,5 +1,4 @@
 ﻿
-using System;
 using UnityEngine;
 
 public class UIController:MonoBehaviour
@@ -8,33 +7,24 @@ public class UIController:MonoBehaviour
     public GameObject loseUI;
     public LevelUI levelUI;
     public GameObject pauseUI;
+    public static UIController Instance;
 
-    private void OnEnable()
-    {
-        GameController.OnLevelComplete += LevelComplete;
-        GameController.OnLevelFailed += LevelFailed;
-        GameController.FinalLevel += NoNextLevel;
-        GameController.OnPause += ShowPauseMenu;
-        GameController.OnResume += HidePauseMenu;
-        
-    }
-
+    
     void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
         loseUI.SetActive(false);
         winUI.gameObject.SetActive(false);
         levelUI.gameObject.SetActive(true);
         pauseUI.SetActive(false);
     }
 
-    private void OnDisable()
-    {
-        GameController.OnLevelComplete -= LevelComplete;
-        GameController.OnLevelFailed -= LevelFailed;
-        GameController.FinalLevel -= NoNextLevel;
-        GameController.OnPause -= ShowPauseMenu;
-        GameController.OnResume -= HidePauseMenu;
-    }
+    
 
     public void OnNextLevel()
     {
@@ -45,6 +35,15 @@ public class UIController:MonoBehaviour
     {
         pauseUI.gameObject.SetActive(true);
         levelUI.gameObject.SetActive(false);
+    }
+
+    public void SetTwoStars()
+    {
+        levelUI.TwoStars();
+    }
+    public void SetOneStar()
+    {
+        levelUI.OneStar();
     }
 
     public void HidePauseMenu()
@@ -62,6 +61,12 @@ public class UIController:MonoBehaviour
     public void OnRestartLevel()
     {
         GameController.Instance.RestartLevel();
+    }
+
+    public void Init(int bullets)
+    {
+        levelUI.UpdateBullets(bullets);
+        levelUI.ThreeStars();
     }
 
     public void NoNextLevel()
@@ -86,6 +91,7 @@ public class UIController:MonoBehaviour
                 break;
         }
     }
+   
 
     public void LevelFailed()
     {

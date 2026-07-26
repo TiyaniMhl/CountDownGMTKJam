@@ -1,15 +1,9 @@
-using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
-    
     private Rigidbody2D _inGameRb;
-    
     public static PlayerController Instance;
-    public GameObject player;
-    public GameObject gameCamera;
     
     [Header("Movement")]
     public float moveSpeed = 5f;
@@ -53,14 +47,15 @@ public class PlayerController : MonoBehaviour
             return;
         }
         Instance = this;
+        _gameController = GameController.Instance;
         _inGameRb = GetComponent<Rigidbody2D>();
         _bulletPool = Instantiate(bulletPoolPrefab);
         _animator = GetComponentInChildren<Animator>();
         _lineRenderer = GetComponentInChildren<LineRenderer>();
-        _gameController = GameController.Instance;
         _lineRenderer.useWorldSpace = true;
         _cooldownTimer = 0;
     }
+    
 
 
     private void OnDestroy()
@@ -71,7 +66,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (_gameController.levelHasEnded)
+        if (!_gameController.GameActive())
         {
             return;
         }
@@ -83,7 +78,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && !_gameController.GamePaused())
+        if (Input.GetKeyDown(KeyCode.Escape) && !_gameController.GamePaused() && _gameController.GameActive())
         {
             GameController.Instance.Pause();
             return;
@@ -94,11 +89,10 @@ public class PlayerController : MonoBehaviour
             GameController.Instance.Resume();
             return;
         }
-        if (_gameController.levelHasEnded)
+        if (!_gameController.GameActive())
         {
             return;
         }
-
         if (_cooldownTimer>0)
         {
             _cooldownTimer -= Time.deltaTime;
@@ -158,7 +152,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
         _lineRenderer.enabled = true;
-        RaycastHit2D hit = Physics2D.Raycast(gunPosition, bulletSpawner.right, maxLaserDistance);
+        RaycastHit2D hit = Physics2D.Raycast(gunPosition, bulletSpawner.right, maxLaserDistance, LayerMask.GetMask("Ground", "Objects"));
         _lineRenderer.SetPosition(0, gunPosition);
         if (hit.collider != null)
         {
@@ -178,7 +172,7 @@ public class PlayerController : MonoBehaviour
 
     public void Shoot()
     {
-        if (!GameController.Instance.TryDecreaseBullets())
+        if (!LevelController.Instance.TryDecreaseBullets())
         {
             return;
         }

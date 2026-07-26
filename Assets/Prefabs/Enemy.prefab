@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7670210471877825636}
   - component: {fileID: 7903343436789228790}
   - component: {fileID: 6871961151067647492}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -144,7 +144,7 @@ CapsuleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 72
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -154,10 +154,10 @@ CapsuleCollider2D:
     m_Bits: 4294967295
   m_ContactCaptureLayers:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 119
   m_CallbackLayers:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 119
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
@@ -205,23 +205,23 @@ CapsuleCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 72
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 72
   m_ForceReceiveLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 72
   m_ContactCaptureLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 72
   m_CallbackLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 72
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
@@ -239,7 +239,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7311188889247134812}
   - component: {fileID: 2688794148363310140}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Blood
   m_TagString: Untagged
   m_Icon: {fileID: 0}

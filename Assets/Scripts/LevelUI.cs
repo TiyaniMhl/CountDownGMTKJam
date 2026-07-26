@@ -12,24 +12,18 @@ public class LevelUI : MonoBehaviour
 
     private void OnEnable()
     {
-        GameController.OnBulletsChanged += UpdateBullets;
-        GameController.OnThreeStars += ThreeStars;
-        GameController.OnTwoStars += TwoStars;
-        GameController.OnOneStar += OneStar;
+        LevelController.OnBulletsChanged += UpdateBullets;
     }
 
     private void OnDisable()
     {
-        GameController.OnBulletsChanged -= UpdateBullets;
-        GameController.OnThreeStars -= ThreeStars;
-        GameController.OnTwoStars -= TwoStars;
-        GameController.OnOneStar -= OneStar;
+        LevelController.OnBulletsChanged -= UpdateBullets;
     }
 
     void Start()
     {
         countFlash.alpha = 0f;
-        bulletCountText.text = GameController.Instance.bullets + "";
+        bulletCountText.text = LevelController.Instance.bullets + "";
     }
 
     public void ThreeStars()
@@ -73,10 +67,4 @@ public class LevelUI : MonoBehaviour
         countFlash.alpha = 0f;
     }
     
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

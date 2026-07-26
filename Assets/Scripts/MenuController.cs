@@ -17,11 +17,6 @@ public class MenuController : MonoBehaviour
         Instance = this;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     void Start()
     {

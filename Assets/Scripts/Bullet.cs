@@ -1,5 +1,3 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -36,10 +34,6 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
-    {
-        
-    }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
@@ -72,8 +66,4 @@ public class Bullet : MonoBehaviour
         return dot/aAbs*bAbs;
     }
 
-    void Move()
-    {
-        
-    }
 }

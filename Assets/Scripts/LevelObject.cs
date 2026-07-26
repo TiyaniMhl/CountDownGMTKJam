@@ -10,7 +10,7 @@ public class LevelObject : ScriptableObject
     [Tooltip("Amount of bullets remaining required for two stars.")]
     public int twoStars;
 
-    public Vector3 initialCameraPosition = new (0, 0, -10f);
+    public Vector2 initialCameraPosition = new (0, 0);
     public string FullSceneName()
     {
         return "Scenes/" + sceneName;

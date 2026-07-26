@@ -1,5 +1,4 @@
 ﻿
-    using System;
     using UnityEngine;
 
     public class CameraFollow : MonoBehaviour
@@ -16,7 +15,11 @@
         private void Awake()
         {
             _player = GameObject.FindGameObjectWithTag("Player").transform;
-            gameObject.transform.position = GameController.Instance.initCameraPos();
+        }
+
+        public void Init(Vector2 v)
+        {
+            gameObject.transform.position = new (v.x, v.y,  -10f);
         }
 
         void LateUpdate()
