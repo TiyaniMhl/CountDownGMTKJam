@@ -29,6 +29,7 @@ public class GameController : MonoBehaviour
         if (level == null)
         {
             _currentLevel = LevelDatabase.MainMenu();
+            _active = false;
             return;
         }
         _active = true;
@@ -48,7 +49,10 @@ public class GameController : MonoBehaviour
     
     public void SaveAndQuit()
     {
+        
+        Time.timeScale = 1f;
         SceneController.Instance.BackToMainMenu();
+        _gamePaused = false;
         Init(null);
     }
 
