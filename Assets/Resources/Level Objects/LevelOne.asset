@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneName: LevelOne
   levelNumber: 1
-  bullets: 3
-  threeStars: 2
+  bullets: 5
+  threeStars: 3
   twoStars: 1
+  initialCameraPosition: {x: 0, y: 0}

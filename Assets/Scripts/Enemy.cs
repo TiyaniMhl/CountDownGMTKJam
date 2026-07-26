@@ -17,14 +17,12 @@ public class Enemy : Destructible
     }
     
 
-    protected override IEnumerator Hit()
+    protected override void Hit()
     {
-        if (AlreadyHit) yield break;
+        if (AlreadyHit) return;
         AlreadyHit = true;
         LevelController.Instance.EnemyDying();
-        Animator.SetTrigger(DestroyThis);
-        triggerCollider.enabled = false;
-        yield return new WaitForSeconds(5);
-        Destroy(gameObject);
+        StartCoroutine(BeginDestruction());
     }
+    
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -50,6 +51,11 @@ public class Bullet : MonoBehaviour
                 Destroy(gameObject);
             }
         }
+    }
+
+    private void OnDestroy()
+    {
+        LevelController.Instance.UpdateStarCount();
     }
 
     private bool SimilarDirections(Vector2 a, Vector2 b)

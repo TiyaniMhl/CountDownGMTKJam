@@ -61,7 +61,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -2951,7 +2951,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thirdStar: {fileID: 7000141201671113153}
   secondStar: {fileID: 3484258185553689164}
-  nextLevelButton: {fileID: 0}
+  nextLevelButton: {fileID: 1646572591179319485}
 --- !u!1 &6781983951639910638
 GameObject:
   m_ObjectHideFlags: 0

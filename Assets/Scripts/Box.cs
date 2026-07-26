@@ -8,15 +8,13 @@
         public Collider2D largeCollider;
         public Collider2D smallCollider;
         
-        protected override IEnumerator Hit()
+        protected override void Hit()
         {
-            if (AlreadyHit) yield break;
+            if (AlreadyHit) return;
             AlreadyHit = true;
-            Animator.SetTrigger(DestroyThis);
-            triggerCollider.enabled = false;
             largeCollider.enabled = false;
             smallCollider.enabled = true;
-            yield return new WaitForSeconds(5);
-            Destroy(gameObject);
+            StartCoroutine(BeginDestruction());
         }
+        
     }

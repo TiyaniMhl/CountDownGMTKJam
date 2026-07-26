@@ -7,7 +7,6 @@
     {
         public static LevelController Instance;
         public bool levelHasEnded;
-        
         [Tooltip("Amount of bullets given for this level.")]
         public int bullets;
         [Tooltip("Amount of bullets remaining required for three stars.")]
@@ -20,7 +19,6 @@
         private int _enemiesToEliminate;
         private int _enemiesEliminated;
         private bool _levelStarted;
-        //private LevelObject _currentLevel;
         public UIController uiController;
         public CameraFollow cam;
 
@@ -35,7 +33,6 @@
             Instance = this;
             
         }
-        
 
         public void Init(LevelObject currentLevel)
         {
@@ -77,11 +74,22 @@
             {
                 yield break;
             }
-            //UnityEngine.Cursor.visible = true;
             levelHasEnded = true;
+            if (bullets >= threeStars)
+            {
+                stars = 3;
+            }
+            else if (bullets >= twoStars)
+            {
+                stars = 2;
+            }
+            else
+            {
+                stars = 1;
+            }
             GameController.Instance.LevelCompleted(stars);
             yield return new WaitForSeconds(1);
-            UIController.Instance.LevelComplete(stars);
+            UIController.Instance.LevelComplete(stars, GameController.Instance.LastLevel());
         }
         public bool TryDecreaseBullets()
         {
@@ -91,18 +99,27 @@
             }
             bullets--;
             OnBulletsChanged?.Invoke(bullets);
-            if (bullets == threeStars-1)
+            return true;
+        }
+
+        public void UpdateStarCount()
+        {
+            if (levelHasEnded)
+            {
+                return;
+            }
+            if (bullets == threeStars)
             {
                 stars = 2;
                 UIController.Instance.SetTwoStars();
             }
-            else if (bullets == twoStars-1)
+            else if (bullets == twoStars)
             {
                 stars = 1;
                 UIController.Instance.SetOneStar();
             }
-            return true;
         }
+
         IEnumerator FinalLevelCheck()
         {
             yield return new WaitForSeconds(2);

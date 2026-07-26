@@ -4,22 +4,30 @@ using UnityEngine;
 
 public class Destructible : MonoBehaviour
 {
-    protected Animator Animator;
-    protected static readonly int DestroyThis = Animator.StringToHash("Destroy");
+    private Animator _animator;
+    private static readonly int DestroyThis = Animator.StringToHash("Destroy");
     public Collider2D triggerCollider;
     protected bool AlreadyHit;
+    private AudioSource _audioSource;
     private void Start()
     {
-        Animator = GetComponent<Animator>();
+        _animator = GetComponent<Animator>();
         AlreadyHit = false;
+        _audioSource = GetComponent<AudioSource>();
     }
 
     
-    protected virtual IEnumerator Hit()
+    protected virtual void Hit()
     {
-        if (AlreadyHit) yield break;
+        if (AlreadyHit) return;
         AlreadyHit = true;
-        Animator.SetTrigger(DestroyThis);
+        StartCoroutine(BeginDestruction());
+    }
+
+    protected IEnumerator BeginDestruction()
+    {
+        _audioSource.PlayOneShot(_audioSource.clip);
+        _animator.SetTrigger(DestroyThis);
         triggerCollider.enabled = false;
         yield return new WaitForSeconds(5);
         Destroy(gameObject);
@@ -30,7 +38,7 @@ public class Destructible : MonoBehaviour
         if (other.CompareTag("Bullet"))
         {
             other.GetComponent<Bullet>().SomethingHit();
-            StartCoroutine(Hit());
+            Hit();
         }
     }
 }

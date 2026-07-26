@@ -68,13 +68,12 @@ public class UIController:MonoBehaviour
         levelUI.UpdateBullets(bullets);
         levelUI.ThreeStars();
     }
-
     public void NoNextLevel()
     {
         winUI.HideNextLevelButton();
     }
 
-    public void LevelComplete(int s)
+    public void LevelComplete(int s, bool finalLevel)
     {
         levelUI.gameObject.SetActive(false);
         winUI.gameObject.SetActive(true);
@@ -89,6 +88,10 @@ public class UIController:MonoBehaviour
             case 1:
                 winUI.OneStar();
                 break;
+        }
+        if (finalLevel)
+        {
+            winUI.HideNextLevelButton();
         }
     }
    

@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 _localGunPos;
     private float _cooldownTimer;
     private GameController _gameController;
+    private AudioSource _audioSource;
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -53,6 +54,7 @@ public class PlayerController : MonoBehaviour
         _animator = GetComponentInChildren<Animator>();
         _lineRenderer = GetComponentInChildren<LineRenderer>();
         _lineRenderer.useWorldSpace = true;
+        _audioSource = GetComponent<AudioSource>();
         _cooldownTimer = 0;
     }
     
@@ -176,7 +178,7 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-
+        _audioSource.PlayOneShot(_audioSource.clip);
         _cooldownTimer = cooldown;
         var gunPosition = bulletSpawner.position;
         Quaternion rot = Quaternion.LookRotation(cursor.position - gunPosition, Vector2.up);

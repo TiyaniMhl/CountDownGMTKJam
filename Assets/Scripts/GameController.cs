@@ -5,18 +5,10 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public static GameController Instance;
-    
-    private List<bool> _levelsCompleted;
-    private List<int> _levelStars;
-    public int continueFromLevel;
     private LevelObject _currentLevel;
     private bool _active = true;
-    [HideInInspector] public bool playOrContinue = false;
     private bool _gamePaused;
     private bool _onMainMenu;
-    public bool debugLevel;
-
-    public int debug;
     
     void Awake()
     {
@@ -27,12 +19,7 @@ public class GameController : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        if (debugLevel)
-        {
-            Load();
-            SceneController.Instance.Play(debug);
-            return;
-        }
+        LevelDatabase.BuildLevelList();
         Init(null);
     }
     
@@ -41,11 +28,7 @@ public class GameController : MonoBehaviour
         
         if (level == null)
         {
-            Load();
-            //UnityEngine.Cursor.visible = true;
             _currentLevel = LevelDatabase.MainMenu();
-            //MenuController.Instance.ContinueGame(_continueFromLevel!=1);
-            playOrContinue = (continueFromLevel != 1);
             return;
         }
         _active = true;
@@ -60,27 +43,17 @@ public class GameController : MonoBehaviour
 
     public void Play()
     {
-        SceneController.Instance.Play(continueFromLevel);
+        SceneController.Instance.Play(1);
     }
     
-
-
-    public void ResetGame()
-    {
-        SaveSystem.Delete();
-        Init(null);
-    }
-
     public void SaveAndQuit()
     {
-        Save();
         SceneController.Instance.BackToMainMenu();
         Init(null);
     }
 
     public void Quit()
     {
-        // Save();
         // Exits play mode if running inside the Unity Editor
         #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
@@ -88,33 +61,6 @@ public class GameController : MonoBehaviour
 
         // Closes the application if running a built version
         Application.Quit();
-    }
-    
-
-    void Save()
-    {
-        SaveData saveData = new SaveData
-        {
-            levelsCompleted = _levelsCompleted,
-            levelStars = _levelStars
-        };
-        if (_currentLevel.levelNumber!=0)
-        {
-            saveData.continueFromLevel = _currentLevel.levelNumber;
-        }
-        else
-        {
-            saveData.continueFromLevel = 1; //Fail safe in case, this should not be possible
-        }
-        SaveSystem.SaveGame(saveData);
-    }
-
-    void Load()
-    {
-        SaveData data = SaveSystem.LoadGame();
-        _levelsCompleted = data.levelsCompleted;
-        _levelStars = data.levelStars;
-        continueFromLevel = data.continueFromLevel;
     }
 
     public void SetActive(bool b)
@@ -128,9 +74,7 @@ public class GameController : MonoBehaviour
     {
         return _active;
     }
-
     
-
     public void RestartLevel()
     {
         SceneController.Instance.Play(_currentLevel.levelNumber);
@@ -139,8 +83,11 @@ public class GameController : MonoBehaviour
     public void LevelCompleted(int s)
     {
         _active = false;
-        _levelsCompleted[_currentLevel.levelNumber] = true;
-        _levelStars[_currentLevel.levelNumber] = s;
+    }
+
+    public bool LastLevel()
+    {
+        return _currentLevel.levelNumber == 5;
     }
 
     public void NextLevel()
@@ -148,8 +95,6 @@ public class GameController : MonoBehaviour
         int nextLevel = _currentLevel.levelNumber + 1;
         SceneController.Instance.Play(nextLevel);
     }
-
-    
 
     public void Pause()
     {
@@ -175,7 +120,5 @@ public class GameController : MonoBehaviour
     {
         return _gamePaused;
     }
-
-
     
 }
