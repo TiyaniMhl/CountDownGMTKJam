@@ -1,4 +1,4 @@
-# BulletPool (GMTK Game Jam)
+# [BulletPool (GMTK Game Jam)](https://omgyanii.itch.io/bulletpool)
 
 A puzzle-platforming prototype created for the GMTK Game Jam.
 
