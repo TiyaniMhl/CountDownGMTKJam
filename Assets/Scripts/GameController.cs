@@ -120,6 +120,10 @@ public class GameController : MonoBehaviour
         _levelStars = data.levelStars;
         continueFromLevel = data.continueFromLevel;
     }
+    public bool LastLevel()
+    {
+        return _currentLevel.levelNumber == 5;
+    }
 
     public void SetActive(bool b)
     {
