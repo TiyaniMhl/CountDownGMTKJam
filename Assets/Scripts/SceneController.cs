@@ -18,7 +18,6 @@
             }
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            
         }
         
         public void Play(int lo)
